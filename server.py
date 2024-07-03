@@ -1,8 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from requests import get
 from post import Post
 
-API_LINK = 'https://api.npoint.io/1a770340ef2283d5a6d9'
+API_LINK = 'https://api.npoint.io/6400377b76d8734017fa'
 
 app = Flask(__name__)
 
@@ -22,11 +22,6 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
-def contact():
-    return render_template("contact.html")
-
-
 @app.route("/post/<int:index>")
 def show_post(index:int):
     post = None
@@ -34,6 +29,19 @@ def show_post(index:int):
         if index == blog_post.id:
             post = blog_post
     return render_template("post.html", post=post)
+
+
+@app.route("/contact", methods=["POST", "GET"])
+def contact():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        phone_number = request.form['phone_number']
+        message = request.form['message']
+        print(name, '\n', email, '\n', phone_number, '\n', message)
+        return render_template("contact.html", input=True)
+    elif request.method == "GET":
+        return render_template("contact.html", input=False)
 
 
 if __name__ == "__main__":
